@@ -1,0 +1,17 @@
+[XGBoost]
+Accuracy : 0.9951
+Precision: 0.9973
+Recall   : 0.9894
+F1-Score : 0.9934
+
+[RandomForest]
+Accuracy : 0.9956
+Precision: 0.9978
+Recall   : 0.9903
+F1-Score : 0.9940
+
+[SVM]
+Accuracy : 0.9940
+Precision: 0.9951
+Recall   : 0.9885
+F1-Score : 0.9918
