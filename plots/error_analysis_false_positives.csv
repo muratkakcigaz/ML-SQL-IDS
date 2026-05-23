@@ -1,0 +1,51 @@
+Sentence,Label,Predicted,Score
+SELECT * FROM having WHERE flew = 'not'  OR hill = 'say',0,1,0.9954066536306928
+"SELECT a.name AS airport_name,a.municipality,COUNT(r.id) AS runway_count, CAST(AVG(r.length_ft) AS SIGNED) AS avg_runway_length FROM airport a JOIN runways r ON a.id = r.airport_ref WHERE r.length_ft >=  CAST(""3520"" AS SIGNED) AND a.iso_country = ""AS"" GROUP BY a.id, a.name, a.municipality ORDER BY avg_runway_length DESC;",0,1,0.871199842770821
+"SELECT r.name AS region_name, COUNT(a.id) AS airport_count FROM airport a JOIN regions r ON a.iso_region = r.code WHERE a.iso_country = ""BH"" GROUP BY r.name ORDER BY r.name ASC;",0,1,0.6624873162894215
+SELECT tin ( s )  FROM score UNION ALL,0,1,0.9437432044226115
+SELECT disappear ( s )  FROM fighting UNION ALL,0,1,0.9380695727327647
+"UPDATE regions SET keywords = ""Kyushu and Okinawa"" WHERE iso_country = ""KG"";",0,1,0.7034668495528833
+"SELECT a.id, a.name, a.type, a.iso_country, a.municipality FROM airport a WHERE a.elevation_ft > (SELECT AVG(elevation_ft) FROM airport WHERE iso_country = ""JP"") OR a.elevation_ft > 23.0",0,1,0.5188280744809751
+"INSERT INTO countries (code, name, continent) VALUES (""MR"", ""Bosnia and Herzegovina"", ""EU"")",0,1,0.5992107553365752
+"SELECT a.id, a.name, a.type, a.iso_country, a.municipality FROM airport a WHERE a.elevation_ft > (SELECT AVG(elevation_ft) FROM airport WHERE iso_country = ""RE"") OR a.elevation_ft > 4744.0",0,1,0.5003557831156913
+"   SELECT moment, army, silkFROM task WHERE carried  IS NOT NULL",0,1,0.7602983426755775
+SELECT apartment ( s )  FROM plenty UNION ALL,0,1,0.7213003808340717
+SELECT plus FROM plural UNION SELECT education FROM opposite ORDER BY shinning,0,1,0.9559369691833122
+SELECT * FROM station WHERE invented = 'worry'  AND City = 'meant',0,1,0.6975618233811399
+SELECT slave ( s )  FROM important UNION ALL,0,1,0.8957010780491599
+"SELECT r.name AS region_name, COUNT(a.id) AS airport_count FROM airport a JOIN regions r ON a.iso_region = r.code WHERE a.iso_country = ""ZZ"" GROUP BY r.name ORDER BY r.name ASC;",0,1,0.6604046303506498
+SELECT * FROM bell WHERE sheep = 'accurate'  AND  ( steel = 'drive' OR column = 'mouth' ) ,0,1,0.9878079000781426
+SELECT once ( s )  FROM afraid UNION ALL,0,1,0.8213887079089996
+"SELECT r.name AS region_name, COUNT(a.id) AS airport_count FROM airport a JOIN regions r ON a.iso_region = r.code WHERE a.iso_country = ""BE"" GROUP BY r.name ORDER BY r.name ASC;",0,1,0.6419634972239879
+"INSERT INTO countries (code, name, continent) VALUES (""IN"", ""Wallis and Futuna"", ""AF"")",0,1,0.514181562916191
+"DELETE FROM airport WHERE name LIKE ""National Hospital for Orthopaedics and Rehabilitation Heliport"" OR keywords LIKE ""21MD"";  ",0,1,0.5946355918988498
+"  UPDATE they SET or =  'golden', City =  'path' WHERE us =  onto",0,1,0.5653419202219307
+SELECT AVG ( hand ) FROM term SELECT SUM ( stomach ) ,0,1,0.5691121534486757
+"INSERT INTO countries (code, name, continent) VALUES (""VA"", ""Bosnia and Herzegovina"", ""AF"")",0,1,0.5849246035590016
+"   SELECT piece,lunch,rush,information,part     (  (  definition JOIN value ON bad.silver =  plant.vegetable )   INNER JOIN sidesON Orders.wall =  vote.baseID ) ",0,1,0.8986174134247799
+"INSERT INTO countries (code, name, continent, keywords) VALUES (""GE"", ""Montenegro"", ""EU"", ""Airports in Trinidad and Tobago"")",0,1,0.5454919865192419
+"INSERT INTO aboard  ( smallest, large, somehow )  VALUES  ( 'ready', 'maybe', 'element' )  ",0,1,0.6099079688629113
+SELECT tip FROM leather UNION SELECT evening FROM task ORDER BY coat,0,1,0.9872412527882102
+SELECT * FROM anywhere WHERE one NOT LIKE '[attack]%',0,1,0.8367497611600331
+"SELECT r.name AS region_name, COUNT(a.id) AS airport_count FROM airport a JOIN regions r ON a.iso_region = r.code WHERE a.iso_country = ""LC"" GROUP BY r.name ORDER BY r.name ASC;",0,1,0.6533525574339993
+"SELECT r.name AS region_name, COUNT(a.id) AS airport_count FROM airport a JOIN regions r ON a.iso_region = r.code WHERE a.iso_country = ""GQ"" GROUP BY r.name ORDER BY r.name ASC;",0,1,0.6469210437291443
+SELECT Count ( * )  AS known,0,1,0.5137475921004436
+" SELECT * FROM fifth ORDER BY noon ASC, give DESC",0,1,0.9955487987246667
+"INSERT INTO countries (code, name, continent) VALUES (""RW"", ""Wallis and Futuna"", ""AF"")",0,1,0.5745564165703553
+SELECT * FROM combine WHERE stone = 'basic'  AND  ( open = 'proper' OR spent = 'leather' ) ,0,1,0.9287045209162617
+"INSERT INTO countries (code, name, continent) VALUES (""MD"", ""Antigua and Barbuda"", ""AF"")",0,1,0.5652875984881927
+"INSERT INTO regions (code, local_code, name, continent, iso_country) VALUES (""IN-LD"", ""LK"", ""Sovereign Base Areas of Akrotiri and Dhekelia"", ""AF"", ""BR"")",0,1,0.617156625131384
+DELETE FROM raise WHERE value = 'clock',0,1,0.5144076387307844
+"INSERT INTO countries (code, name, continent, keywords) VALUES (""LV"", ""Bosnia and Herzegovina"", ""AS"", ""Holland, Luchthavens van Nederland, Dutch airports"")",0,1,0.5782127012269381
+SELECT * FROM walk WHERE son = 'failed'  AND City = 'hold',0,1,0.8241076805362472
+"SELECT t.*, tt.*, tr.object_id FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt ON t.term_id  =  tt.term_id INNER JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id  =  tt.term_taxonomy_id WHERE tt.taxonomy IN  ( 'agent_category', 'agent_city' )  AND tr.object_id IN  ( 28313, 28341 )  ORDER BY t.name ASC",0,1,0.7591748023312292
+"SELECT a.id, a.name, a.type, a.iso_country, a.municipality FROM airport a WHERE a.elevation_ft > (SELECT AVG(elevation_ft) FROM airport WHERE iso_country = ""DO"") OR a.elevation_ft > 2228.0",0,1,0.5301298247590798
+"SELECT a.id, a.name, a.type, a.iso_country, a.municipality FROM airport a WHERE a.elevation_ft > (SELECT AVG(elevation_ft) FROM airport WHERE iso_country = ""UG"") OR a.elevation_ft > 2214.0",0,1,0.5222564628319201
+"INSERT INTO countries (code, name, continent, keywords) VALUES (""VC"", ""São Tomé and Principe"", ""AS"", ""Letiště České republiky, Czechia"")",0,1,0.5823300824735825
+"SELECT a.id, a.name, a.type, a.iso_country, a.municipality FROM airport a WHERE a.elevation_ft > (SELECT AVG(elevation_ft) FROM airport WHERE iso_country = ""MC"") OR a.elevation_ft > 396.0",0,1,0.5124027902932523
+SELECT * FROM sold ORDER BY hot,0,1,0.997378559116809
+"  SELECT Orders.seriesrID, Employees.leg, Employees.serve FROM OrdersRIGHT JOIN Employees ON Orders.EmployeeID  =  Employees.trainID ORDER BY Orders.briefID",0,1,0.9996355235995336
+"INSERT INTO countries (code, name, continent, keywords) VALUES (""EH"", ""São Tomé and Principe"", ""AS"", ""Aeropuertos de Bolivia"")",0,1,0.5563449665396487
+"SELECT a.name AS airport_name,a.municipality,COUNT(r.id) AS runway_count, CAST(AVG(r.length_ft) AS SIGNED) AS avg_runway_length FROM airport a JOIN runways r ON a.id = r.airport_ref WHERE r.length_ft >=  CAST(""1298"" AS SIGNED) AND a.iso_country = ""MU"" GROUP BY a.id, a.name, a.municipality ORDER BY avg_runway_length DESC;",0,1,0.8840190483198814
+"  SELECT faster,cross,eventually FROM enter LEFT JOIN Orders ON accurate.plateID =  job.found ORDER BY baby.period",0,1,0.9871445609288299
+andrs castanyer,0,1,0.9801209988619455

@@ -1,0 +1,36 @@
+{
+  "target_recall_validation": 0.99,
+  "optimal_threshold": 0.06999999999999999,
+  "validation_metrics": {
+    "Accuracy": 0.7961783120711486,
+    "Balanced_Accuracy": 0.8819830894773744,
+    "Precision": 0.33912759885854055,
+    "Recall": 0.9906163665809279,
+    "F1-Score": 0.5052782468202967,
+    "MCC": 0.5079323009807463,
+    "ROC-AUC": NaN,
+    "PR-AUC": NaN,
+    "Threshold": 0.06999999999999999,
+    "FPR": 0.2266501876261793
+  },
+  "test_metrics_default_0_5": {
+    "Accuracy": 0.9931834083558801,
+    "Balanced_Accuracy": 0.9793796636159682,
+    "Precision": 0.9729143782158756,
+    "Recall": 0.9619034009717062,
+    "F1-Score": 0.967377558059324,
+    "MCC": 0.9635912251213915,
+    "ROC-AUC": 0.9936157761339149,
+    "PR-AUC": 0.9812381502626925
+  },
+  "test_metrics_optimal": {
+    "Accuracy": 0.7956193639249154,
+    "Balanced_Accuracy": 0.8818389382648688,
+    "Precision": 0.3385536169340272,
+    "Recall": 0.9909974278365247,
+    "F1-Score": 0.5046903086361354,
+    "MCC": 0.507447215706016,
+    "ROC-AUC": 0.9936157761339149,
+    "PR-AUC": 0.9812381502626925
+  }
+}
