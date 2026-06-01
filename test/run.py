@@ -18,7 +18,9 @@ from elasticsearch.exceptions import ApiError, ConnectionError as ESConnectionEr
 from scipy.sparse import spmatrix
 
 import config
-from dataset_loader import load_test_dataset
+from dataset_loader import DatasetMeta, load_test_dataset
+from model_evaluation import EvaluationData
+from model_evaluation import evaluate_model as compute_model_metrics
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -389,21 +391,100 @@ def print_realtime_line(
         print(f"[+] Row {row_id} processed -> {pred_upper} (skipped)")
 
 
-def stream_process_dataset(
+def extract_ground_truth_binary(row: pd.Series, has_label: bool) -> Optional[int]:
+    """Return 0/1 ground truth from Label column when available."""
+    if not has_label or config.LABEL_COLUMN not in row.index:
+        return None
+    value = row[config.LABEL_COLUMN]
+    if pd.isna(value):
+        return None
+    return int(value)
+
+
+def extract_ground_truth_multiclass(
+    row: pd.Series,
+    has_label: bool,
+    has_attack_type_col: bool,
+) -> Optional[str]:
+    """Return multi-class ground truth (attack_type or label-derived)."""
+    if has_attack_type_col:
+        value = row.get(config.ATTACK_TYPE_COLUMN)
+        if pd.notna(value) and str(value).strip():
+            return str(value).strip()
+
+    label = extract_ground_truth_binary(row, has_label)
+    if label is None:
+        return None
+    if label == 1:
+        return config.DEFAULT_ATTACK_TYPE
+    return "normal"
+
+
+def prediction_to_multiclass_label(
+    pred_int: int,
+    row: pd.Series,
+    has_attack_type_col: bool,
+) -> str:
+    """Map binary model output to a multi-class label string."""
+    if pred_int == 0:
+        return "normal"
+    return resolve_attack_type(row, has_attack_type_col)
+
+
+def record_evaluation_sample(
+    eval_data: EvaluationData,
+    row: pd.Series,
+    pred_int: int,
+    has_label: bool,
+    has_attack_type_col: bool,
+    enable_multiclass: bool,
+) -> None:
+    """Append ground truth and prediction for post-stream metrics."""
+    y_true_bin = extract_ground_truth_binary(row, has_label)
+    if y_true_bin is not None:
+        eval_data.y_true_binary.append(y_true_bin)
+        eval_data.y_pred_binary.append(pred_int)
+
+    if enable_multiclass:
+        y_true_mc = extract_ground_truth_multiclass(
+            row, has_label, has_attack_type_col
+        )
+        if y_true_mc is not None:
+            eval_data.y_true_multiclass.append(y_true_mc)
+            eval_data.y_pred_multiclass.append(
+                prediction_to_multiclass_label(pred_int, row, has_attack_type_col)
+            )
+
+
+def stream_predict_and_send(
     client: Elasticsearch,
     model: Any,
     vectorizer: Any,
     df: pd.DataFrame,
     feature_columns: list[str],
-    has_attack_type_col: bool,
+    dataset_meta: DatasetMeta,
     logger: logging.Logger,
-) -> StreamStats:
+) -> tuple[StreamStats, EvaluationData]:
     """
-    Process each dataset row sequentially: predict, optionally index, sleep.
+    Process each row: predict, index attacks to ES, collect eval samples.
 
     Only attacks are sent to Elasticsearch when INDEX_ONLY_ATTACKS is True.
     """
     stats = StreamStats()
+    eval_data = EvaluationData()
+    has_attack_type_col = dataset_meta.has_attack_type
+    has_label = dataset_meta.has_label
+
+    enable_multiclass = False
+    if has_attack_type_col and config.ATTACK_TYPE_COLUMN in df.columns:
+        n_unique = int(df[config.ATTACK_TYPE_COLUMN].nunique(dropna=True))
+        enable_multiclass = n_unique >= 2
+        if enable_multiclass:
+            logger.info(
+                "Multi-class evaluation enabled (%d attack_type classes).",
+                n_unique,
+            )
+
     total_rows = len(df)
 
     logger.info(
@@ -431,6 +512,15 @@ def stream_process_dataset(
         label = prediction_label(pred_int)
         attack_type = resolve_attack_type(row, has_attack_type_col)
         stats.total_processed += 1
+
+        record_evaluation_sample(
+            eval_data,
+            row,
+            pred_int,
+            has_label,
+            has_attack_type_col,
+            enable_multiclass,
+        )
 
         if label == "attack":
             stats.attack_predictions += 1
@@ -490,7 +580,7 @@ def stream_process_dataset(
                 stats.indexed_attacks,
             )
 
-    return stats
+    return stats, eval_data
 
 
 def print_summary(stats: StreamStats, logger: logging.Logger) -> None:
@@ -527,6 +617,20 @@ def print_summary(stats: StreamStats, logger: logging.Logger) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Model evaluation (post-stream)
+# ---------------------------------------------------------------------------
+
+
+def evaluate_model(
+    eval_data: EvaluationData,
+    dataset_name: str,
+    logger: logging.Logger,
+) -> dict[str, Any]:
+    """Compute metrics, print report, and optionally export JSON."""
+    return compute_model_metrics(eval_data, dataset_name, logger)
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -554,7 +658,6 @@ def main() -> int:
         vectorizer = load_vectorizer(logger)
         df, dataset_meta = load_test_dataset(logger)
         feature_columns = determine_feature_columns(df)
-        has_attack_type_col = dataset_meta.has_attack_type
         logger.info(
             "Dataset '%s' | encoding=%s | rows=%d",
             dataset_meta.source_path.name,
@@ -565,19 +668,27 @@ def main() -> int:
         client = create_es_client_with_retry(logger)
         try:
             ensure_index(client, config.ES_INDEX, logger)
-            stats = stream_process_dataset(
+            stats, eval_data = stream_predict_and_send(
                 client=client,
                 model=model,
                 vectorizer=vectorizer,
                 df=df,
                 feature_columns=feature_columns,
-                has_attack_type_col=has_attack_type_col,
+                dataset_meta=dataset_meta,
                 logger=logger,
             )
         finally:
             client.close()
 
         print_summary(stats, logger)
+
+        if config.RUN_MODEL_EVALUATION:
+            evaluate_model(
+                eval_data,
+                dataset_name=dataset_meta.source_path.name,
+                logger=logger,
+            )
+
         logger.info("Pipeline finished successfully.")
     except FileNotFoundError as exc:
         logger.exception("Missing file: %s", exc)

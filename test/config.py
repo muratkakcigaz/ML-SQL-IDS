@@ -60,6 +60,7 @@ LABEL_COLUMN_ALIASES: tuple[str, ...] = (
     "is_sql_injection",
     "attack",
     "malicious",
+    "is_attack",
     "y",
 )
 
@@ -99,6 +100,13 @@ ES_HEALTH_POLL_INTERVAL_SEC: float = 5.0
 ES_CONNECT_MAX_RETRIES: int = 10
 ES_CONNECT_RETRY_BACKOFF_SEC: float = 3.0
 ES_INDEX_MAX_RETRIES: int = 5
+
+# ---------------------------------------------------------------------------
+# Model evaluation (after streaming completes)
+# ---------------------------------------------------------------------------
+RUN_MODEL_EVALUATION: bool = True
+EXPORT_METRICS_JSON: bool = True
+METRICS_JSON_PATH: Path = Path(__file__).resolve().parent / "metrics_report.json"
 
 # ---------------------------------------------------------------------------
 # Logging

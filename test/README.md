@@ -16,6 +16,7 @@ project002/
     ├── run.py              # Real-time streaming pipeline
     ├── config.py           # paths, aliases, streaming flags
     ├── dataset_loader.py   # encoding + column + label normalization
+    ├── model_evaluation.py # accuracy, F1, confusion matrix, JSON export
     ├── requirements.txt
     ├── README.md
     └── logs/run.log
@@ -135,6 +136,27 @@ Attack / Normal yüzdesi
 ```
 
 **Durdurmak:** `Ctrl+C` — stream güvenli şekilde kesilir.
+
+### Model evaluation (stream bittikten sonra)
+
+`run.py` yapısı:
+
+```text
+run.py
+ ├── stream_predict_and_send()   # real-time ES + örnek toplama
+ ├── evaluate_model()            # metrikler + rapor
+ └── main()
+```
+
+| Ayar | Varsayılan |
+|------|------------|
+| `RUN_MODEL_EVALUATION` | `True` |
+| `EXPORT_METRICS_JSON` | `True` |
+| `METRICS_JSON_PATH` | `test/metrics_report.json` |
+
+- **Binary:** `Label` (0/1) vs tahmin — sklearn `classification_report`, confusion matrix
+- **Multi-class:** `attack_type` kolonu ve ≥2 sınıf varsa — `average="weighted"`
+- Her satırda `y_true` / `y_pred` listeye eklenir; stream sonunda rapor basılır
 
 ---
 
