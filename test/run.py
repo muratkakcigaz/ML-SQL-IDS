@@ -318,10 +318,13 @@ def predict_single(
     vectorizer: Any,
     text: str,
 ) -> tuple[int, Optional[float]]:
-    """Vectorize one payload and return (class, attack confidence)."""
+    """Vectorize one payload and return (class, attack confidence).
+
+    Classification uses predict_proba[:, 1] >= config.PREDICTION_THRESHOLD so that
+    the decision boundary can be tuned without retraining.  Falls back to
+    model.predict() only when the model has no predict_proba method.
+    """
     X: spmatrix = vectorizer.transform([text])
-    pred_raw = model.predict(X)[0]
-    pred_int = int(pred_raw)
 
     confidence: Optional[float] = None
     if hasattr(model, "predict_proba"):
@@ -330,6 +333,11 @@ def predict_single(
             confidence = float(proba[0, 1])
         except Exception:  # noqa: BLE001
             confidence = None
+
+    if confidence is not None:
+        pred_int = int(confidence >= config.PREDICTION_THRESHOLD)
+    else:
+        pred_int = int(model.predict(X)[0])
 
     return pred_int, confidence
 

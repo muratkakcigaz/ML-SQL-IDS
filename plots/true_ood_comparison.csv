@@ -1,0 +1,4 @@
+Senaryo,F1,ROC-AUC,MCC
+LR full train (TF-IDF contaminated),0.878903,0.974934,0.811310
+LR OOD-approx (classifier izole),0.724138,0.883949,0.559404
+LR true OOD (TF-IDF + clf izole),0.785745,0.918618,0.662192

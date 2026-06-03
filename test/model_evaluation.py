@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 import numpy as np
+import pandas as pd
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -275,6 +276,46 @@ def export_metrics_json(
     logger.info("Metrics exported to %s", path)
 
 
+def export_metrics_table(
+    binary: Optional[BinaryMetrics],
+    multiclass: Optional[MulticlassMetrics],
+    dataset_name: str,
+    path: Path,
+    logger: logging.Logger,
+) -> None:
+    """Write a flat CSV table of summary metrics."""
+    rows: list[dict[str, Any]] = []
+    if binary is not None:
+        rows.append(
+            {
+                "dataset": dataset_name,
+                "task": "binary",
+                "accuracy": binary.accuracy,
+                "precision": binary.precision,
+                "recall": binary.recall,
+                "f1_score": binary.f1_score,
+                "support": binary.support,
+            }
+        )
+    if multiclass is not None:
+        rows.append(
+            {
+                "dataset": dataset_name,
+                "task": "multiclass",
+                "accuracy": multiclass.accuracy,
+                "precision": multiclass.precision,
+                "recall": multiclass.recall,
+                "f1_score": multiclass.f1_score,
+                "support": multiclass.support,
+            }
+        )
+    if not rows:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(rows).to_csv(path, index=False, float_format="%.4f")
+    logger.info("Metrics table exported to %s", path)
+
+
 def evaluate_model(
     eval_data: EvaluationData,
     dataset_name: str,
@@ -350,6 +391,18 @@ def evaluate_model(
             export_metrics_json(payload, config.METRICS_JSON_PATH, logger)
         except OSError as exc:
             logger.error("Failed to write metrics JSON: %s", exc)
+
+    if config.EXPORT_METRICS_TABLE and payload:
+        try:
+            export_metrics_table(
+                binary_metrics,
+                multiclass_metrics,
+                dataset_name,
+                config.METRICS_TABLE_PATH,
+                logger,
+            )
+        except OSError as exc:
+            logger.error("Failed to write metrics table: %s", exc)
 
     return payload
 

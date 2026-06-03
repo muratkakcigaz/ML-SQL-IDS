@@ -44,7 +44,8 @@ TEXT_COLUMN_ALIASES: tuple[str, ...] = (
     "text",
     "request",
     "full_query",
-    "normalized_query",
+    # "normalized_query" deliberately excluded: that column is computed on the full
+    # dataset before train/test split and must never be used as a model feature.
     "sql_query",
     "http_request",
     "url",
@@ -102,6 +103,20 @@ ES_CONNECT_RETRY_BACKOFF_SEC: float = 3.0
 ES_INDEX_MAX_RETRIES: int = 5
 
 # ---------------------------------------------------------------------------
+# Prediction threshold
+# ---------------------------------------------------------------------------
+# Probability threshold for classifying a query as an attack.
+# predict_single uses predict_proba[:, 1] >= PREDICTION_THRESHOLD.
+#
+# Threshold trade-offs (measured on validation set — see plots/lr_optimal_threshold.json):
+#   0.50 → Precision=0.97, Recall=0.96, FPR=1.3%   (default, low false-alarm rate)
+#   0.31 → Precision=0.73, Recall=0.99, FPR≈3%     (high-recall IDS mode)
+#   0.07 → Precision=0.34, Recall=0.99, FPR=22.7%  (too aggressive, not recommended)
+#
+# Change this value to tune the recall vs false-positive trade-off.
+PREDICTION_THRESHOLD: float = 0.50
+
+# ---------------------------------------------------------------------------
 # Model evaluation (after streaming completes)
 # ---------------------------------------------------------------------------
 RUN_MODEL_EVALUATION: bool = True
@@ -109,6 +124,8 @@ RUN_MODEL_EVALUATION: bool = True
 EVALUATE_ON_INTERRUPT: bool = True
 EXPORT_METRICS_JSON: bool = True
 METRICS_JSON_PATH: Path = Path(__file__).resolve().parent / "metrics_report.json"
+EXPORT_METRICS_TABLE: bool = True
+METRICS_TABLE_PATH: Path = Path(__file__).resolve().parent / "metrics_report.csv"
 
 # ---------------------------------------------------------------------------
 # Logging

@@ -1,18 +1,18 @@
 {
   "dataset": "sqliv2.csv",
-  "partial": true,
-  "processed_rows": 25797,
+  "partial": false,
+  "processed_rows": 33757,
   "total_rows": 33757,
   "binary": {
-    "accuracy": 0.9845330852424701,
-    "precision": 0.9790258276997746,
+    "accuracy": 0.9863731966703202,
+    "precision": 0.9738770583671006,
     "recall": 0.9862918012747751,
-    "f1_score": 0.9826453829759471,
-    "support": 25797,
+    "f1_score": 0.9800451153912892,
+    "support": 33757,
     "confusion_matrix": [
       [
-        14102,
-        242
+        22001,
+        303
       ],
       [
         157,
@@ -21,8 +21,8 @@
     ]
   },
   "multiclass": null,
-  "accuracy": 0.9845330852424701,
-  "precision": 0.9790258276997746,
+  "accuracy": 0.9863731966703202,
+  "precision": 0.9738770583671006,
   "recall": 0.9862918012747751,
-  "f1_score": 0.9826453829759471
+  "f1_score": 0.9800451153912892
 }
