@@ -1,3 +1,15 @@
+# ── Large / generated data files ──────────────────────────────────────────────
+# merged_cleaned_preprocessed.csv is ~680 MB — exceeds GitHub 100 MB limit
+data/merged_cleaned_preprocessed.csv
+# Raw source datasets (large; re-downloadable)
+data/looking for beter dataset/dataset.csv
+data/looking for beter dataset/Rule-Based SQL Injection (RbSQLi) Dataset.zip
+data/looking for beter dataset/sqli_dataset.csv
+data/Modified/archive/
+data/archive.zip
+data/Modified/archive.zip
+# ──────────────────────────────────────────────────────────────────────────────
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

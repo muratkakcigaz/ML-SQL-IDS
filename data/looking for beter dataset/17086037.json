@@ -1,0 +1,458 @@
+{
+  "access": {
+    "embargo": {
+      "active": false,
+      "reason": null
+    },
+    "files": "public",
+    "record": "public",
+    "status": "open"
+  },
+  "created": "2025-09-10T12:38:23.568337+00:00",
+  "custom_fields": {
+    "code:codeRepository": "https://github.com/gquetel/sqlia-dataset"
+  },
+  "deletion_status": {
+    "is_deleted": false,
+    "status": "P"
+  },
+  "files": {
+    "count": 1,
+    "enabled": true,
+    "entries": {
+      "dataset.csv": {
+        "access": {
+          "hidden": false
+        },
+        "checksum": "md5:7fe0fd69a3cde9b57bc4f1e2d19260f8",
+        "ext": "csv",
+        "id": "19b4f45b-d75b-486e-8445-f18fc7394027",
+        "key": "dataset.csv",
+        "links": {
+          "content": "https://zenodo.org/api/records/17086037/files/dataset.csv/content",
+          "self": "https://zenodo.org/api/records/17086037/files/dataset.csv"
+        },
+        "metadata": {},
+        "mimetype": "text/csv",
+        "size": 1053264204,
+        "storage_class": "L"
+      }
+    },
+    "order": [],
+    "total_bytes": 1053264204
+  },
+  "id": "17086037",
+  "is_draft": false,
+  "is_published": true,
+  "links": {
+    "access": "https://zenodo.org/api/records/17086037/access",
+    "access_grants": "https://zenodo.org/api/records/17086037/access/grants",
+    "access_links": "https://zenodo.org/api/records/17086037/access/links",
+    "access_request": "https://zenodo.org/api/records/17086037/access/request",
+    "access_users": "https://zenodo.org/api/records/17086037/access/users",
+    "archive": "https://zenodo.org/api/records/17086037/files-archive",
+    "archive_media": "https://zenodo.org/api/records/17086037/media-files-archive",
+    "communities": "https://zenodo.org/api/records/17086037/communities",
+    "communities-suggestions": "https://zenodo.org/api/records/17086037/communities-suggestions",
+    "doi": "https://doi.org/10.5281/zenodo.17086037",
+    "draft": "https://zenodo.org/api/records/17086037/draft",
+    "file_modification": "https://zenodo.org/api/records/17086037/file-modification",
+    "files": "https://zenodo.org/api/records/17086037/files",
+    "latest": "https://zenodo.org/api/records/17086037/versions/latest",
+    "latest_html": "https://zenodo.org/records/17086037/latest",
+    "media_files": "https://zenodo.org/api/records/17086037/media-files",
+    "parent": "https://zenodo.org/api/records/15744476",
+    "parent_doi": "https://doi.org/10.5281/zenodo.15744476",
+    "parent_doi_html": "https://zenodo.org/doi/10.5281/zenodo.15744476",
+    "parent_html": "https://zenodo.org/records/15744476",
+    "preview_html": "https://zenodo.org/records/17086037?preview=1",
+    "request_deletion": "https://zenodo.org/api/records/17086037/request-deletion",
+    "requests": "https://zenodo.org/api/records/17086037/requests",
+    "reserve_doi": "https://zenodo.org/api/records/17086037/draft/pids/doi",
+    "self": "https://zenodo.org/api/records/17086037",
+    "self_doi": "https://doi.org/10.5281/zenodo.17086037",
+    "self_doi_html": "https://zenodo.org/doi/10.5281/zenodo.17086037",
+    "self_html": "https://zenodo.org/records/17086037",
+    "self_iiif_manifest": "https://zenodo.org/api/iiif/record:17086037/manifest",
+    "self_iiif_sequence": "https://zenodo.org/api/iiif/record:17086037/sequence/default",
+    "versions": "https://zenodo.org/api/records/17086037/versions"
+  },
+  "media_files": {
+    "count": 0,
+    "enabled": false,
+    "entries": {},
+    "order": [],
+    "total_bytes": 0
+  },
+  "metadata": {
+    "additional_descriptions": [
+      {
+        "description": "<p dir=\"auto\">Each sample is characterized by the following columns:</p>\n<ul>\n<li><code>full_query</code>: The full SQL statement.</li>\n<li><code>label</code>: 0 for normal samples, 1 for attacks.</li>\n<li><code>user_inputs</code>: The user input without the query template.</li>\n<li><code>attack_stage</code>: Empty for normal samples, either \"recon\" or \"exploit\" for attacks.</li>\n<li><code>tamper_method</code>: Empty for normal samples, for attacks this field designate the randomly selected tamper script used by&nbsp;<code>sqlmap</code>&nbsp;to mutate this sample.</li>\n<li><code>attack_status</code>: Empty for normal samples, else this indicates whether the attack campaign from which this sample was generated, succeeded (\"success\") or not (\"failure\").</li>\n<li><code>statement_type</code>: Either \"select\", \"delete\", \"execute\", \"modify\", \"admin\" or \"internal\".</li>\n<li><code>query_template_id</code>: The query template ID associated to this sample.</li>\n<li><code>attack_id</code>: Empty for normal samples, else the attack campaign identifier.</li>\n<li><code>attack_technique</code>: Empty for normal samples, else the&nbsp;<code>sqlmap</code> technique used for this attack: \"boolean\", \"error\", \"inline\", \"stacked\", \"time\", \"union\" or \"insider\".</li>\n<li><code>split</code>: Proposed split for this dataset: either \"train\" or \"test\".&nbsp;</li>\n</ul>",
+        "type": {
+          "id": "series-information",
+          "title": {
+            "de": "Informationen zur Reihe",
+            "en": "Series information"
+          }
+        }
+      },
+      {
+        "description": "<h2>Generation Process</h2>\n<p>An effort during the design of the dataset was made to foster the realism and diversity of both normal and attack samples. The dataset generation relies on templates of queries, filled by legitimate values for normal samples generation, and sqlmap generated payloads for malicious samples. The chosen database schema on which the dataset is based comes from the <a href=\"https://ourairports.com/data/\">OurAirports project</a>. The project reports airport infrastructure around the world and was selected for its real-world usage, well-documented database schema, and the availability of publicly accessible data dumps. 62 SQL templates were manually defined to create our samples, covering different statement types: 23 SELECT, 10 UPDATE, 10 INSERT, 8 DELETE, and 11 administrative queries involving user and privilege management.&nbsp;<br><br></p>\n<h2>Normal samples</h2>\n<p>Normal samples were generated using the <a href=\"https://github.com/davidmegginson/ourairports-data\">data dump</a>&nbsp;provided by the OurAirports project. We made sure of their syntactical validity by submitting them to a MySQL server.</p>\n<h2>Attack samples</h2>\n<p>SQL Injection attack samples were generated by using the SQL Injection detection and exploitation tool <code>sqlmap</code>. Attack samples are generated for a random subset of 45 query templates (mimicking an application where not all endpoints are rendered available to external entities). For each of them, we created simulated HTTP vulnerable endpoints on which&nbsp;<code>sqlmap</code>&nbsp;attack campaigns were launched. Attack campaigns are made of two steps:</p>\n<ul>\n<li>Reconnaissance, where&nbsp;<code>sqlmap</code> is iteratively invoked on the different HTTP parameters to identify a correct payload.&nbsp;</li>\n<li>Exploitation, which only took place if the reconnaissance step was successful for an HTTP parameter. We asked <code>sqlmap</code>&nbsp;to extract database information using the identified payload.</li>\n</ul>\n<p>A random tamper script amongst those compatible with MySQL were selected at each invocation of&nbsp;<code>sqlmap</code> and random values for HTTP parameters that were not tested were provided to foster diversity of attacks and their realism.</p>\n<p>SQL queries representative of insider attacks are also provided in the dataset. They are rarely present in existing dataset so we provided a few&nbsp;examples also generated using <code>sqlmap</code>.&nbsp; 4&nbsp;campaigns with different exfiltration objectives were launched&nbsp;using the direct connection mode to generate these samples.</p>",
+        "type": {
+          "id": "methods",
+          "title": {
+            "de": "Methoden",
+            "en": "Methods"
+          }
+        }
+      },
+      {
+        "description": "<p>Following is the <a href=\"https://doi.org/10.48550/arXiv.1803.09010\">Datasheet</a> for Superviz25-SQL .<br><br></p>\n<div dir=\"auto\">\n<h1>Superviz25-SQL</h1>\nBy:</div>\n<ul>\n<li>Gr&eacute;gor Qu&eacute;tel, mail: <a href=\"mailto:gregor.quetel@telecom-paris.fr\">gregor.quetel@telecom-paris.fr</a></li>\n<li>Pierre-Fran&ccedil;ois Gimenez, mail: <a href=\"mailto:pierre-francois.gimenez@inria.fr\">pierre-francois.gimenez@inria.fr</a></li>\n<li>Thomas Robert, mail: <a href=\"mailto:thomas.robert@telecom-paris.fr\">thomas.robert@telecom-paris.fr</a></li>\n<li>Laurent Pautet, mail: <a href=\"mailto:laurent.pautet@telecom-paris.fr\">laurent.pautet@telecom-paris.fr</a></li>\n<li>Eric Alata, mail: <a href=\"mailto:ealata@laas.fr\">ealata@laas.fr</a></li>\n</ul>\n<p dir=\"auto\">Organisations: PEPR Superviz, T&eacute;l&eacute;com Paris, INRIA, LAAS CNRS.</p>\n<p dir=\"auto\">SuperviZ25-SQL has been designed to evaluate unsupervised SQL Injection detection techniques. The dataset allows to evaluate the capability of mechanisms trained on the benign workload of a unique database schema to detect SQL Injection attack on this targeting this specific deployment. What follows below is the <a href=\"https://arxiv.org/abs/1803.09010\" rel=\"nofollow\">datasheet</a> describing this data.</p>\n<div dir=\"auto\">\n<h2>Motivation</h2>\n</div>\n<ol>\n<li>\n<p dir=\"auto\"><strong>For what purpose was the dataset created?</strong> <em>(Was there a specific task in mind? Was there a specific gap that needed to be filled? Please provide a description.)</em><br>SuperviZ25-SQL has been designed to provide a realist, diverse, properly documented dataset for unsupervised SQL Injection detection.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Who created this dataset (e.g., which team, research group) and on behalf of which entity (e.g., company, institution, organization)?</strong><br>The dataset was created by members of the PEPR SuperviZ project.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Who funded the creation of the dataset?</strong> <em>(If there is an associated grant, please provide the name of the grantor and the grant name and number.)</em><br>This work has been partially supported by the French National Research Agency under the France 2030 label (Superviz ANR-22-PECY-0008).</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Any other comments?</strong><br>None.</p>\n</li>\n</ol>\n<div dir=\"auto\">\n<h2>Composition</h2>\n</div>\n<ol>\n<li>\n<p dir=\"auto\"><strong>What do the instances that comprise the dataset represent (e.g., documents, photos, people, countries)?</strong> <em>(Are there multiple types of instances (e.g., movies, users, and ratings; people and interactions between them; nodes and edges)? Please provide a description.)</em><br>The instances in this dataset represents SQL queries executed against a MySQL database. There are two type of instance: synthetic benign SQL queries and malicious queries containing SQL Injection payloads generated using <code>sqlmap</code>.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>How many instances are there in total (of each type, if appropriate)?</strong><br>The dataset contains a total of 3,688,977 instances:</p>\n<ul>\n<li>Training set: 335,306 benign queries only</li>\n<li>Test set: 3,352,582 total instances\n<ul>\n<li>3,017,390 benign queries (90%)</li>\n<li>336,281 malicious queries (10%)</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>\n<p dir=\"auto\"><strong>Does the dataset contain all possible instances or is it a sample (not necessarily random) of instances from a larger set?</strong> <em>(If the dataset is a sample, then what is the larger set? Is the sample representative of the larger set (e.g., geographic coverage)? If so, please describe how this representativeness was validated/verified. If it is not representative of the larger set, please describe why not (e.g., to cover a more diverse range of instances, because instances were withheld or unavailable).)</em><br>This dataset is a synthetic sample of the possible instances of SQL queries that are virtually unlimited. However, we tried to provide a realistic coverage of both attacks and normal queries given the query templates. The dataset is based on:</p>\n<ul>\n<li>A specific database schema from the <a href=\"https://ourairports.com\" rel=\"nofollow\">OurAirports</a> project.</li>\n<li>62 manually designed SQL query templates.</li>\n<li>Attack campaigns targeting a randomly selected subset of 45 out of 62 templates (representing scenarios where only some endpoints are reachable).</li>\n<li>The benign workload is designed to be representative of real-world SQL traffic patterns, with statement type distributions as follows: 70% SELECT, 10% UPDATE, 10% INSERT, 9% DELETE, 1% administrative.</li>\n</ul>\n</li>\n<li>\n<p dir=\"auto\"><strong>What data does each instance consist of?</strong> <em>(``Raw'' data (e.g., unprocessed text or images)or features? In either case, please provide a description.)</em></p>\n</li>\n</ol>\n<p dir=\"auto\">Each sample is characterized by the following columns:</p>\n<ul>\n<li><code>full_query</code>: The full SQL statement.</li>\n<li><code>label</code>: 0 for normal samples, 1 for attacks.</li>\n<li><code>user_inputs</code>: The user input without the query template.</li>\n<li><code>attack_stage</code>: Empty for normal samples, either \"recon\" or \"exploit\" for attacks.</li>\n<li><code>tamper_method</code>: Empty for normal samples, for attacks this field designate the randomly selected tamper script used by&nbsp;<code>sqlmap</code>&nbsp;to mutate this sample.</li>\n<li><code>attack_status</code>: Empty for normal samples, else this indicates whether the attack campaign from which this sample was generated, succeeded (\"success\") or not (\"failure\").</li>\n<li><code>statement_type</code>: Either \"select\", \"delete\", \"execute\", \"modify\", \"admin\" or \"internal\".</li>\n<li><code>query_template_id</code>: The query template ID associated to this sample.</li>\n<li><code>attack_id</code>: Empty for normal samples, else the attack campaign identifier.</li>\n<li><code>attack_technique</code>: Empty for normal samples, else the&nbsp;<code>sqlmap</code> technique used for this attack: \"boolean\", \"error\", \"inline\", \"stacked\", \"time\", \"union\" or \"insider\".</li>\n<li><code>split</code>: Proposed split for this dataset: either \"train\" or \"test\".&nbsp;</li>\n</ul>\n<ol>\n<li>\n<p dir=\"auto\"><strong>Is there a label or target associated with each instance? If so, please provide a description.</strong><br>Yes, each instance has a binary label: either 0 = benign or 1 = malicious. Additionally, malicious instances have fine-grained labels indicating the specific attack technique used (boolean-based, error-based, time-based, union-based, stacked queries, inline queries, or insider queries).</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Is any information missing from individual instances?</strong> <em>(If so, please provide a description, explaining why this information is missing (e.g., because it was unavailable). This does not include intentionally removed information, but might include, e.g., redacted text.)</em><br>No.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Are relationships between individual instances made explicit (e.g., users' movie ratings, social network links)?</strong> <em>(If so, please describe how these relationships are made explicit.)</em><br>Instances can be related by the SQL query template they originate from or the attack campaign they are part of (given by the <code>attack_id</code> column).</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Are there recommended data splits (e.g., training, development/validation, testing)?</strong> <em>(If so, please provide a description of these splits, explaining the rationale behind them.)</em><br>Yes, a training and a testing split is provided through the <code>split</code> column. The test split was generated first: 336,281&nbsp; attacks were collected. We had an objective to provide an imbalanced test set comprising 10% attacks samples, hence we generated 3,017,390 benign queries. For the train set, we choose to provide a set of instance of roughly the same size to the attack set, leading to a train set with 335,306 instances.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Are there any errors, sources of noise, or redundancies in the dataset?</strong> <em>(If so, please provide a description.)</em><br>We cannot be sure that all samples generated with <code>sqlmap</code> actually contains a malicious payload, for instance the tool sometimes send queries without payloads to test the HTTP connection. Hence, we tried to minimize labelling errors of attack samples by removing all contradictory instances: instances with the same <code>full_query</code> value but with different <code>label</code> value.</p>\n<p dir=\"auto\">Redundancies in SQL queries is common, since we aimed at providing a realistic dataset, such behaviour can be observed in our dataset.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Is the dataset self-contained, or does it link to or otherwise rely on external resources (e.g., websites, tweets, other datasets)?</strong> <em>(If it links to or relies on external resources, a) are there guarantees that they will exist, and remain constant, over time; b) are there official archival versions of the complete dataset (i.e., including the external resources as they existed at the time the dataset was created); c) are there any restrictions (e.g., licenses, fees) associated with any of the external resources that might apply to a future user? Please provide descriptions of all external resources and any restrictions associated with them, as well as links or other access points, as appropriate.)</em><br>The dataset is self-contained.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Does the dataset contain data that might be considered confidential (e.g., data that is protected by legal privilege or by doctor-patient confidentiality, data that includes the content of individuals' non-public communications)?</strong> <em>(If so, please provide a description.)</em><br>No.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Does the dataset contain data that, if viewed directly, might be offensive, insulting, threatening, or might otherwise cause anxiety?</strong> <em>(If so, please describe why.)</em><br>No.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Any other comments?</strong><br>None.</p>\n</li>\n</ol>\n<div dir=\"auto\">\n<h2>Collection Process</h2>\n</div>\n<ol>\n<li>\n<p dir=\"auto\"><strong>How was the data associated with each instance acquired?</strong> <em>(Was the data directly observable (e.g., raw text, movie ratings), reported by subjects (e.g., survey responses), or indirectly inferred/derived from other data (e.g., part-of-speech tags, model-based guesses for age or language)? If data was reported by subjects or indirectly inferred/derived from other data, was the data validated/verified? If so, please describe how.)</em><br>Each instance was synthetically generated.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>What mechanisms or procedures were used to collect the data (e.g., hardware apparatus or sensor, manual human curation, software program, software API)?</strong> <em>(How were these mechanisms or procedures validated?)</em><br>Instances were generated using our publicly available <a href=\"https://github.com/gquetel/sqlia-dataset\">generator</a>. Normal samples were syntactically validated by submitting them to a MySQL server. No validation on the instances built using <code>sqlmap</code> were performed.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>If the dataset is a sample from a larger set, what was the sampling strategy (e.g., deterministic, probabilistic with specific sampling probabilities)?</strong><br>Not applicable.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Who was involved in the data collection process (e.g., students, crowdworkers, contractors) and how were they compensated (e.g., how much were crowdworkers paid)?</strong><br>Authors took part in the design of the generator. They were paid through their employment at their respective institutions.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Over what timeframe was the data collected?</strong> <em>(Does this timeframe match the creation timeframe of the data associated with the instances (e.g., recent crawl of old news articles)? If not, please describe the timeframe in which the data associated with the instances was created.)</em><br>The dataset generation roughly took 10 hours.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Were any ethical review processes conducted (e.g., by an institutional review board)?</strong> <em>(If so, please provide a description of these review processes, including the outcomes, as well as a link or other access point to any supporting documentation.)</em><br>No.</p>\n</li>\n</ol>\n<div dir=\"auto\">\n<h2>Preprocessing/cleaning/labeling</h2>\n</div>\n<ol>\n<li>\n<p dir=\"auto\"><strong>Was any preprocessing/cleaning/labeling of the data done (e.g., discretization or bucketing, tokenization, part-of-speech tagging, SIFT feature extraction, removal of instances, processing of missing values)?</strong> <em>(If so, please provide a description. If not, you may skip the remainder of the questions in this section.)</em><br>8233 contradictory instances were removed. They consisted of instances found with both labels, originating from <code>sqlmap</code> that sometimes sends queries without an actual malicious payload.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Was the \"raw\" data saved in addition to the preprocessed/cleaned/labeled data (e.g., to support unanticipated future uses)?</strong> <em>(If so, please provide a link or other access point to the \"raw\" data.)</em><br>No.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Is the software used to preprocess/clean/label the instances available?</strong> <em>(If so, please provide a link or other access point.)</em><br>Yes, that code is available in the <a href=\"https://github.com/gquetel/sqlia-dataset\">generator repository</a>.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Any other comments?</strong><br>None.</p>\n</li>\n</ol>\n<div dir=\"auto\">\n<h2>Uses</h2>\n</div>\n<ol>\n<li>\n<p dir=\"auto\"><strong>Has the dataset been used for any tasks already?</strong> <em>(If so, please provide a description.)</em></p>\n<p dir=\"auto\">Yes, 9 unsupervised SQL Injection detection pipelines were trained and tested on the dataset. Each pipeline consist of a feature extraction mechanism:</p>\n<ul>\n<li>CountVectorizer: A word count based approach, provided by scikit-learn.</li>\n<li>Manually Selected Features, specific to SQL Injection detection, derived from the paper <a href=\"https://doi.org/10.1109/ACCESS.2019.2944951\" rel=\"nofollow\">\"A SQL Injection Detection Method Based on Adaptive Deep Forest\"</a>.</li>\n<li>Sentence-BERT: A pre-trained on cybersecurity data BERT model used to compute a fixed-size vector representation of the query presented in <a href=\"https://doi.org/10.1007/978-3-031-25538-0_3\" rel=\"nofollow\">\"SecureBERT: A Domain-Specific Language Model for Cybersecurity\"</a>.</li>\n</ul>\n<p dir=\"auto\">Combined with one of the following novelty detectors:</p>\n<ul>\n<li>Autoencoder: Implemented using PyTorch.</li>\n<li>Local Outlier Factor: Using the scikit-learn implementation.</li>\n<li>One-Class Support Vector Machines: Using the scikit-learn implementation.</li>\n</ul>\n<p dir=\"auto\">All implementations are available in the <a href=\"https://github.com/gquetel/sqlia-dataset\">generator repository</a>.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Is there a repository that links to any or all papers or systems that use the dataset?</strong> <em>(If so, please provide a link or other access point.)</em></p>\n<p dir=\"auto\">No.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>What (other) tasks could the dataset be used for?</strong></p>\n<p dir=\"auto\">The dataset provides a train and test split which does not allow the usage of supervised SQL Injection detection, however with correct preprocessing, one could derive a supervised dataset from the provided instances.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Are there tasks for which the dataset should not be used?</strong> <em>(If so, please provide a description.)</em></p>\n<p dir=\"auto\">No.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Any other comments?</strong></p>\n<p dir=\"auto\">None.</p>\n</li>\n</ol>\n<div dir=\"auto\">\n<h2>Distribution</h2>\n</div>\n<ol>\n<li>\n<p dir=\"auto\"><strong>Will the dataset be distributed to third parties outside of the entity (e.g., company, institution, organization) on behalf of which the dataset was created?</strong> <em>(If so, please provide a description.)</em></p>\n<p dir=\"auto\">Yes, the dataset available under the MIT License.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>How will the dataset will be distributed (e.g., tarball on website, API, GitHub)?</strong> <em>(Does the dataset have a digital object identifier (DOI)?)</em></p>\n<p dir=\"auto\">The dataset is available in a CSV format on the <a href=\"https://zenodo.org/records/15744477\" rel=\"nofollow\">Zenodo</a> platform.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>When will the dataset be distributed?</strong></p>\n<p dir=\"auto\">September 2025.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Will the dataset be distributed under a copyright or other intellectual property (IP) license, and/or under applicable terms of use (ToU)?</strong> <em>(If so, please describe this license and/or ToU, and provide a link or other access point to, or otherwise reproduce, any relevant licensing terms or ToU, as well as any fees associated with these restrictions.)</em><br>Yes, the dataset is distributed under the MIT license.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Have any third parties imposed IP-based or other restrictions on the data associated with the instances?</strong> <em>(If so, please describe these restrictions, and provide a link or other access point to, or otherwise reproduce, any relevant licensing terms, as well as any fees associated with these restrictions.)</em><br>No.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Do any export controls or other regulatory restrictions apply to the dataset or to individual instances?</strong> <em>(If so, please describe these restrictions, and provide a link or other access point to, or otherwise reproduce, any supporting documentation.)</em><br>No.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Any other comments?</strong><br>None.</p>\n</li>\n</ol>\n<div dir=\"auto\">\n<h2>Maintenance</h2>\n</div>\n<ol>\n<li>\n<p dir=\"auto\"><strong>Who is supporting/hosting/maintaining the dataset?</strong><br>Gr&eacute;gor Quetel is maintaining the dataset. The dataset is hosted on the Zenodo platform.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>How can the owner/curator/manager of the dataset be contacted (e.g., email address)?</strong></p>\n<p dir=\"auto\">E-mail addresses are at the top of this document.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Is there an erratum?</strong> <em>(If so, please provide a link or other access point.)</em></p>\n<p dir=\"auto\">Currently, no. As errors are encountered, future versions of the dataset may be released (but will be versioned). They will all be provided in the same Zenodo location.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Will the dataset be updated (e.g., to correct labeling errors, add new instances, delete instances')?</strong> <em>(If so, please describe how often, by whom, and how updates will be communicated to users (e.g., mailing list, GitHub)?)</em></p>\n<p dir=\"auto\">Same as previous.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Will older versions of the dataset continue to be supported/hosted/maintained?</strong> <em>(If so, please describe how. If not, please describe how its obsolescence will be communicated to users.)</em></p>\n<p dir=\"auto\">Yes; all data will be versioned.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>If others want to extend/augment/build on/contribute to the dataset, is there a mechanism for them to do so?</strong> <em>(If so, please provide a description. Will these contributions be validated/verified? If so, please describe how. If not, why not? Is there a process for communicating/distributing these contributions to other users? If so, please provide a description.)</em><br>No.</p>\n</li>\n<li>\n<p dir=\"auto\"><strong>Any other comments?</strong> <br>None.</p>\n</li>\n</ol>",
+        "type": {
+          "id": "notes",
+          "title": {
+            "de": "Anmerkungen",
+            "en": "Notes"
+          }
+        }
+      }
+    ],
+    "additional_titles": [
+      {
+        "title": "Presented at ANUBIS'2025",
+        "type": {
+          "id": "other",
+          "title": {
+            "de": "Sonstiger Titel",
+            "en": "Other"
+          }
+        }
+      }
+    ],
+    "creators": [
+      {
+        "affiliations": [
+          {
+            "id": "01naq7912",
+            "identifiers": [
+              {
+                "identifier": "01naq7912",
+                "scheme": "ror"
+              },
+              {
+                "identifier": "grid.463717.0",
+                "scheme": "grid"
+              },
+              {
+                "identifier": "0000 0001 2108 2779",
+                "scheme": "isni"
+              }
+            ],
+            "name": "T\u00e9l\u00e9com Paris"
+          }
+        ],
+        "person_or_org": {
+          "family_name": "Quetel",
+          "given_name": "Gr\u00e9gor",
+          "identifiers": [
+            {
+              "identifier": "0009-0000-0963-0939",
+              "scheme": "orcid"
+            }
+          ],
+          "name": "Quetel, Gr\u00e9gor",
+          "type": "personal"
+        },
+        "role": {
+          "id": "researcher",
+          "title": {
+            "de": "WissenschaftlerIn",
+            "en": "Researcher"
+          }
+        }
+      },
+      {
+        "affiliations": [
+          {
+            "id": "01naq7912",
+            "identifiers": [
+              {
+                "identifier": "01naq7912",
+                "scheme": "ror"
+              },
+              {
+                "identifier": "grid.463717.0",
+                "scheme": "grid"
+              },
+              {
+                "identifier": "0000 0001 2108 2779",
+                "scheme": "isni"
+              }
+            ],
+            "name": "T\u00e9l\u00e9com Paris"
+          }
+        ],
+        "person_or_org": {
+          "family_name": "Pautet",
+          "given_name": "Laurent",
+          "identifiers": [
+            {
+              "identifier": "0000-0003-0888-187X",
+              "scheme": "orcid"
+            }
+          ],
+          "name": "Pautet, Laurent",
+          "type": "personal"
+        },
+        "role": {
+          "id": "supervisor",
+          "title": {
+            "de": "SupervisorIn",
+            "en": "Supervisor"
+          }
+        }
+      },
+      {
+        "affiliations": [
+          {
+            "name": "LAAS CNRS"
+          }
+        ],
+        "person_or_org": {
+          "family_name": "Alata",
+          "given_name": "Eric",
+          "name": "Alata, Eric",
+          "type": "personal"
+        },
+        "role": {
+          "id": "supervisor",
+          "title": {
+            "de": "SupervisorIn",
+            "en": "Supervisor"
+          }
+        }
+      },
+      {
+        "affiliations": [
+          {
+            "id": "01naq7912",
+            "identifiers": [
+              {
+                "identifier": "01naq7912",
+                "scheme": "ror"
+              },
+              {
+                "identifier": "grid.463717.0",
+                "scheme": "grid"
+              },
+              {
+                "identifier": "0000 0001 2108 2779",
+                "scheme": "isni"
+              }
+            ],
+            "name": "T\u00e9l\u00e9com Paris"
+          }
+        ],
+        "person_or_org": {
+          "family_name": "Robert",
+          "given_name": "Thomas",
+          "name": "Robert, Thomas",
+          "type": "personal"
+        },
+        "role": {
+          "id": "supervisor",
+          "title": {
+            "de": "SupervisorIn",
+            "en": "Supervisor"
+          }
+        }
+      },
+      {
+        "affiliations": [
+          {
+            "id": "04040yw90",
+            "identifiers": [
+              {
+                "identifier": "04040yw90",
+                "scheme": "ror"
+              },
+              {
+                "identifier": "grid.457354.4",
+                "scheme": "grid"
+              }
+            ],
+            "name": "Inria Rennes - Bretagne Atlantique Research Centre"
+          }
+        ],
+        "person_or_org": {
+          "family_name": "Gimenez",
+          "given_name": "Pierre-Fran\u00e7ois",
+          "identifiers": [
+            {
+              "identifier": "0000-0002-4238-4423",
+              "scheme": "orcid"
+            }
+          ],
+          "name": "Gimenez, Pierre-Fran\u00e7ois",
+          "type": "personal"
+        },
+        "role": {
+          "id": "supervisor",
+          "title": {
+            "de": "SupervisorIn",
+            "en": "Supervisor"
+          }
+        }
+      }
+    ],
+    "description": "<h1>Dataset Description</h1>\n<p>Superviz25-SQL is an SQL Injection Detection Dataset made to evaluate unsupervised SQL Injection detection techniques. The dataset allows to compare the capability of mechanisms trained on the benign workload of a specific database deployment to detect SQL Injection attack targeting this deployment.&nbsp;&nbsp;<br><br>We provide a test and train split, the train set consists of 335306 benign queries. The test set comprise 3017390 normal samples and 336281 malicious samples (90:10).&nbsp; Some queries typical of insider attacks are also contained in the dataset (n=1089). The dataset offers more than the SQL query and its label as extended metadata is provided to facilitate the comparison of detection approaches. For instance the attack technique information allows to compare the effectiveness of detection mechanism across existing SQL Injection techniques. Furthermore, the user input field allows the comparison of approaches basing their detection on full queries to those solely using the user inputs.&nbsp;&nbsp;<br><br>The code used for the generation of this dataset is available at <a href=\"https://github.com/gquetel/sqlia-dataset-generator\">gquetel/sqlia-dataset</a>.&nbsp; If you use this dataset, please acknowledge it by citing the original paper:&nbsp;</p>\n<p dir=\"auto\">Gr&eacute;gor Quetel, Eric Alata, Pierre-Fran&ccedil;ois Gimenez, Thomas Robert, Laurent Pautet. Superviz25-SQL: high-quality dataset to empower unsupervised SQL injection detection systems. <em>1st International Workshop on Assessment with New methodologies, Unified Benchmarks, and environments, of Intrusion detection and response Systems (ANUBIS)</em>, Sep 2025, Toulouse, France. <a href=\"https://hal.science/hal-05314211v1\" rel=\"noopener noreferrer nofollow\">\u27e8hal-05314211\u27e9</a></p>\n<p>This work has been partially supported by the French National Research Agency under the France 2030 label (Superviz ANR-22-PECY-0008). The views reflected herein do not necessarily reflect the opinion of the French government.</p>\n<p>&nbsp;</p>\n<h2>Usage&nbsp;</h2>\n<p>The proposed training and testing sets can easily be loaded using python and pandas as follows:</p>\n<pre><code>import pandas as pd \n\ndf = pd.read_csv(\n    \"dataset.csv\",\n    dtype={\n        \"full_query\": str,\n        \"label\": int,\n        \"user_inputs\": str,\n        \"attack_stage\": str,\n        \"tamper_method\": str,\n        \"attack_status\": str,\n        \"statement_type\": str,\n        \"query_template_id\": str,\n        \"attack_id\": str,\n        \"attack_technique\": str,\n        \"split\": str,\n    },\n)\n\ndf_train = df[df[\"split\"] == \"train\"]\ndf_test = df[df[\"split\"] == \"test\"]</code></pre>",
+    "funding": [
+      {
+        "award": {
+          "identifiers": [
+            {
+              "identifier": "https://anr.fr/ProjetIA-22-PECY-0008",
+              "scheme": "url"
+            }
+          ],
+          "number": "Superviz ANR-22-PECY-0008",
+          "title": {
+            "en": "SuperViz "
+          }
+        },
+        "funder": {
+          "id": "00rbzpz17",
+          "name": "Agence Nationale de la Recherche"
+        }
+      }
+    ],
+    "publication_date": "2025-09-26",
+    "publisher": "Zenodo",
+    "related_identifiers": [
+      {
+        "identifier": "https://hal.science/hal-05314211",
+        "relation_type": {
+          "id": "isdescribedby",
+          "title": {
+            "de": "Wird beschrieben von",
+            "en": "Is described by"
+          }
+        },
+        "scheme": "url"
+      }
+    ],
+    "resource_type": {
+      "id": "dataset",
+      "title": {
+        "de": "Datensatz",
+        "en": "Dataset"
+      }
+    },
+    "rights": [
+      {
+        "description": {
+          "en": "A short and simple permissive license with conditions only requiring preservation of copyright and license notices. Licensed works, modifications, and larger works may be distributed under different terms and without source code."
+        },
+        "id": "mit",
+        "props": {
+          "scheme": "spdx",
+          "url": "https://opensource.org/licenses/MIT"
+        },
+        "title": {
+          "en": "MIT License"
+        }
+      }
+    ],
+    "subjects": [
+      {
+        "subject": "SQL Injection detection"
+      },
+      {
+        "id": "euroscivoc:295",
+        "identifiers": [
+          {
+            "identifier": "http://data.europa.eu/8mn/euroscivoc/46889256-2431-4fb0-bee0-184f2c8a24c4",
+            "scheme": "url"
+          }
+        ],
+        "props": {
+          "parents": "euroscivoc:23,euroscivoc:47"
+        },
+        "scheme": "EuroSciVoc",
+        "subject": "Computer security"
+      },
+      {
+        "id": "mesh:D000069558",
+        "scheme": "MeSH",
+        "subject": "Unsupervised Machine Learning"
+      },
+      {
+        "subject": "Intrusion Detection"
+      },
+      {
+        "subject": "SQL Injection Detection Dataset"
+      },
+      {
+        "subject": "SQL Injection Dataset"
+      }
+    ],
+    "title": "Superviz25-SQL: SQL Injection Detection Dataset"
+  },
+  "parent": {
+    "access": {
+      "owned_by": {
+        "user": "1351661"
+      },
+      "settings": {
+        "accept_conditions_text": null,
+        "allow_guest_requests": false,
+        "allow_user_requests": false,
+        "secret_link_expiration": 0
+      }
+    },
+    "communities": {},
+    "id": "15744476",
+    "pids": {
+      "doi": {
+        "client": "datacite",
+        "identifier": "10.5281/zenodo.15744476",
+        "provider": "datacite"
+      }
+    }
+  },
+  "pids": {
+    "doi": {
+      "client": "datacite",
+      "identifier": "10.5281/zenodo.17086037",
+      "provider": "datacite"
+    },
+    "oai": {
+      "identifier": "oai:zenodo.org:17086037",
+      "provider": "oai"
+    }
+  },
+  "revision_id": 14,
+  "stats": {
+    "all_versions": {
+      "data_volume": 211692814871.0,
+      "downloads": 204,
+      "unique_downloads": 157,
+      "unique_views": 671,
+      "views": 778
+    },
+    "this_version": {
+      "data_volume": 152723309580.0,
+      "downloads": 145,
+      "unique_downloads": 117,
+      "unique_views": 543,
+      "views": 638
+    }
+  },
+  "status": "published",
+  "swh": {},
+  "updated": "2025-10-21T11:43:30.718730+00:00",
+  "versions": {
+    "index": 2,
+    "is_latest": true
+  }
+}
