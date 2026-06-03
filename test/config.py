@@ -105,6 +105,8 @@ ES_INDEX_MAX_RETRIES: int = 5
 # Model evaluation (after streaming completes)
 # ---------------------------------------------------------------------------
 RUN_MODEL_EVALUATION: bool = True
+# Ctrl+C ile stream durunca da toplanan örneklerle metrik hesapla
+EVALUATE_ON_INTERRUPT: bool = True
 EXPORT_METRICS_JSON: bool = True
 METRICS_JSON_PATH: Path = Path(__file__).resolve().parent / "metrics_report.json"
 

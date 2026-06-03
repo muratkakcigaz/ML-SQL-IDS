@@ -135,7 +135,7 @@ Index başarısız
 Attack / Normal yüzdesi
 ```
 
-**Durdurmak:** `Ctrl+C` — stream güvenli şekilde kesilir.
+**Durdurmak:** `Ctrl+C` — stream durur; o ana kadar işlenen satırlarla **model evaluation otomatik çalışır** (`EVALUATE_ON_INTERRUPT = True`). Rapor kısmi örnek üzerinden hesaplanır ve `metrics_report.json` içinde `"partial": true` işaretlenir.
 
 ### Model evaluation (stream bittikten sonra)
 

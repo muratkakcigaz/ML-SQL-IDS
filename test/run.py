@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import logging
 import pickle
 import sys
@@ -68,6 +69,16 @@ class StreamStats:
     indexed_documents: int = 0
     skipped_normals: int = 0
     index_failures: int = 0
+
+
+@dataclass
+class StreamResult:
+    """Outcome of stream_predict_and_send (complete or interrupted)."""
+
+    stats: StreamStats
+    eval_data: EvaluationData
+    interrupted: bool = False
+    total_planned_rows: int = 0
 
 
 # ---------------------------------------------------------------------------
@@ -456,62 +467,47 @@ def record_evaluation_sample(
             )
 
 
-def stream_predict_and_send(
-    client: Elasticsearch,
+def resolve_multiclass_enabled(
+    df: pd.DataFrame,
+    dataset_meta: DatasetMeta,
+    logger: logging.Logger,
+) -> bool:
+    """True when attack_type column has at least two distinct classes."""
+    if not dataset_meta.has_attack_type or config.ATTACK_TYPE_COLUMN not in df.columns:
+        return False
+    n_unique = int(df[config.ATTACK_TYPE_COLUMN].nunique(dropna=True))
+    if n_unique >= 2:
+        logger.info(
+            "Multi-class evaluation enabled (%d attack_type classes).",
+            n_unique,
+        )
+        return True
+    return False
+
+
+def collect_evaluation_data(
     model: Any,
     vectorizer: Any,
     df: pd.DataFrame,
-    feature_columns: list[str],
     dataset_meta: DatasetMeta,
     logger: logging.Logger,
-) -> tuple[StreamStats, EvaluationData]:
-    """
-    Process each row: predict, index attacks to ES, collect eval samples.
-
-    Only attacks are sent to Elasticsearch when INDEX_ONLY_ATTACKS is True.
-    """
-    stats = StreamStats()
+) -> EvaluationData:
+    """Run batch inference and collect y_true / y_pred (no Elasticsearch)."""
     eval_data = EvaluationData()
     has_attack_type_col = dataset_meta.has_attack_type
     has_label = dataset_meta.has_label
+    enable_multiclass = resolve_multiclass_enabled(df, dataset_meta, logger)
+    total = len(df)
 
-    enable_multiclass = False
-    if has_attack_type_col and config.ATTACK_TYPE_COLUMN in df.columns:
-        n_unique = int(df[config.ATTACK_TYPE_COLUMN].nunique(dropna=True))
-        enable_multiclass = n_unique >= 2
-        if enable_multiclass:
-            logger.info(
-                "Multi-class evaluation enabled (%d attack_type classes).",
-                n_unique,
-            )
-
-    total_rows = len(df)
-
-    logger.info(
-        "Starting real-time stream | rows=%d | real_time=%s | sleep=%.2fs | "
-        "attacks_only=%s",
-        total_rows,
-        config.REAL_TIME_MODE,
-        config.SLEEP_INTERVAL,
-        config.INDEX_ONLY_ATTACKS,
-    )
-
-    for row_id in range(total_rows):
+    logger.info("Collecting evaluation samples for %d rows...", total)
+    for row_id in range(total):
         row = df.iloc[row_id]
         text = str(row[config.TEXT_COLUMN])
-
         try:
-            pred_int, confidence = predict_single(model, vectorizer, text)
+            pred_int, _confidence = predict_single(model, vectorizer, text)
         except Exception as exc:  # noqa: BLE001
-            logger.error("Prediction failed for row_id=%d: %s", row_id, exc)
-            stats.total_processed += 1
-            if config.REAL_TIME_MODE:
-                time.sleep(config.SLEEP_INTERVAL)
+            logger.warning("Predict failed row_id=%d: %s", row_id, exc)
             continue
-
-        label = prediction_label(pred_int)
-        attack_type = resolve_attack_type(row, has_attack_type_col)
-        stats.total_processed += 1
 
         record_evaluation_sample(
             eval_data,
@@ -522,65 +518,155 @@ def stream_predict_and_send(
             enable_multiclass,
         )
 
-        if label == "attack":
-            stats.attack_predictions += 1
-            document = build_attack_document(
-                row_id=row_id,
-                row=row,
-                confidence=confidence,
-                attack_type=attack_type,
-                feature_columns=feature_columns,
-                has_attack_type_col=has_attack_type_col,
-            )
-            indexed = index_document_with_retry(
-                client, config.ES_INDEX, document, logger
-            )
-            if indexed:
-                stats.indexed_attacks += 1
-                stats.indexed_documents += 1
-            else:
-                stats.index_failures += 1
+        if (row_id + 1) % 5000 == 0:
+            logger.info("Eval progress: %d/%d", row_id + 1, total)
 
-            print_realtime_line(
-                row_id, label, attack_type, confidence, indexed=indexed
-            )
-        else:
-            stats.normal_predictions += 1
-            stats.skipped_normals += 1
-            indexed = False
+    logger.info(
+        "Evaluation samples: binary=%d multiclass=%d",
+        eval_data.binary_sample_count(),
+        eval_data.multiclass_sample_count(),
+    )
+    return eval_data
 
-            if not config.INDEX_ONLY_ATTACKS:
-                document = build_normal_document(
+
+def stream_predict_and_send(
+    client: Elasticsearch,
+    model: Any,
+    vectorizer: Any,
+    df: pd.DataFrame,
+    feature_columns: list[str],
+    dataset_meta: DatasetMeta,
+    logger: logging.Logger,
+) -> StreamResult:
+    """
+    Process each row: predict, index attacks to ES, collect eval samples.
+
+    Only attacks are sent to Elasticsearch when INDEX_ONLY_ATTACKS is True.
+    On Ctrl+C returns partial stats and eval samples collected so far.
+    """
+    stats = StreamStats()
+    eval_data = EvaluationData()
+    has_attack_type_col = dataset_meta.has_attack_type
+    has_label = dataset_meta.has_label
+    enable_multiclass = resolve_multiclass_enabled(df, dataset_meta, logger)
+
+    total_rows = len(df)
+    interrupted = False
+
+    logger.info(
+        "Starting real-time stream | rows=%d | real_time=%s | sleep=%.2fs | "
+        "attacks_only=%s",
+        total_rows,
+        config.REAL_TIME_MODE,
+        config.SLEEP_INTERVAL,
+        config.INDEX_ONLY_ATTACKS,
+    )
+
+    try:
+        for row_id in range(total_rows):
+            row = df.iloc[row_id]
+            text = str(row[config.TEXT_COLUMN])
+
+            try:
+                pred_int, confidence = predict_single(model, vectorizer, text)
+            except Exception as exc:  # noqa: BLE001
+                logger.error("Prediction failed for row_id=%d: %s", row_id, exc)
+                stats.total_processed += 1
+                if config.REAL_TIME_MODE:
+                    time.sleep(config.SLEEP_INTERVAL)
+                continue
+
+            label = prediction_label(pred_int)
+            attack_type = resolve_attack_type(row, has_attack_type_col)
+            stats.total_processed += 1
+
+            record_evaluation_sample(
+                eval_data,
+                row,
+                pred_int,
+                has_label,
+                has_attack_type_col,
+                enable_multiclass,
+            )
+
+            if label == "attack":
+                stats.attack_predictions += 1
+                document = build_attack_document(
                     row_id=row_id,
                     row=row,
                     confidence=confidence,
+                    attack_type=attack_type,
                     feature_columns=feature_columns,
+                    has_attack_type_col=has_attack_type_col,
                 )
                 indexed = index_document_with_retry(
                     client, config.ES_INDEX, document, logger
                 )
                 if indexed:
+                    stats.indexed_attacks += 1
                     stats.indexed_documents += 1
                 else:
                     stats.index_failures += 1
-                stats.skipped_normals -= 1
 
-            print_realtime_line(
-                row_id, label, attack_type, confidence, indexed=indexed
-            )
+                print_realtime_line(
+                    row_id, label, attack_type, confidence, indexed=indexed
+                )
+            else:
+                stats.normal_predictions += 1
+                stats.skipped_normals += 1
+                indexed = False
 
-        if config.REAL_TIME_MODE and config.SLEEP_INTERVAL > 0:
-            time.sleep(config.SLEEP_INTERVAL)
+                if not config.INDEX_ONLY_ATTACKS:
+                    document = build_normal_document(
+                        row_id=row_id,
+                        row=row,
+                        confidence=confidence,
+                        feature_columns=feature_columns,
+                    )
+                    indexed = index_document_with_retry(
+                        client, config.ES_INDEX, document, logger
+                    )
+                    if indexed:
+                        stats.indexed_documents += 1
+                    else:
+                        stats.index_failures += 1
+                    stats.skipped_normals -= 1
 
-        if (row_id + 1) % 100 == 0:
-            logger.info(
-                "Progress: %d/%d | indexed attacks: %d",
-                row_id + 1,
-                total_rows,
-                stats.indexed_attacks,
-            )
+                print_realtime_line(
+                    row_id, label, attack_type, confidence, indexed=indexed
+                )
 
-    return stats, eval_data
+            if config.REAL_TIME_MODE and config.SLEEP_INTERVAL > 0:
+                time.sleep(config.SLEEP_INTERVAL)
+
+            if (row_id + 1) % 100 == 0:
+                logger.info(
+                    "Progress: %d/%d | indexed attacks: %d",
+                    row_id + 1,
+                    total_rows,
+                    stats.indexed_attacks,
+                )
+
+    except KeyboardInterrupt:
+        interrupted = True
+        processed = stats.total_processed
+        logger.warning(
+            "Stream interrupted by user at row %d/%d (%d processed).",
+            processed,
+            total_rows,
+            processed,
+        )
+        print(
+            f"\n[!] Stream stopped by user ({processed:,}/{total_rows:,} rows). "
+            "Running evaluation on collected samples..."
+        )
+
+    return StreamResult(
+        stats=stats,
+        eval_data=eval_data,
+        interrupted=interrupted,
+        total_planned_rows=total_rows,
+    )
 
 
 def print_summary(stats: StreamStats, logger: logging.Logger) -> None:
@@ -625,9 +711,51 @@ def evaluate_model(
     eval_data: EvaluationData,
     dataset_name: str,
     logger: logging.Logger,
+    *,
+    partial: bool = False,
+    processed_rows: int = 0,
+    total_rows: int = 0,
 ) -> dict[str, Any]:
     """Compute metrics, print report, and optionally export JSON."""
-    return compute_model_metrics(eval_data, dataset_name, logger)
+    return compute_model_metrics(
+        eval_data,
+        dataset_name,
+        logger,
+        partial=partial,
+        processed_rows=processed_rows,
+        total_rows=total_rows,
+    )
+
+
+def run_post_stream_evaluation(
+    stream_result: StreamResult,
+    dataset_name: str,
+    logger: logging.Logger,
+) -> None:
+    """Run evaluation after stream completes or is interrupted."""
+    if not config.RUN_MODEL_EVALUATION:
+        return
+
+    if stream_result.interrupted and not config.EVALUATE_ON_INTERRUPT:
+        logger.info("Evaluation on interrupt disabled (EVALUATE_ON_INTERRUPT=False).")
+        return
+
+    eval_data = stream_result.eval_data
+    if not eval_data.has_binary() and not eval_data.has_multiclass():
+        print(
+            "\n[!] Evaluation skipped: no labeled samples collected "
+            "(interrupt too early?)."
+        )
+        return
+
+    evaluate_model(
+        eval_data,
+        dataset_name=dataset_name,
+        logger=logger,
+        partial=stream_result.interrupted,
+        processed_rows=stream_result.stats.total_processed,
+        total_rows=stream_result.total_planned_rows,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -635,10 +763,52 @@ def evaluate_model(
 # ---------------------------------------------------------------------------
 
 
+def run_eval_only(logger: logging.Logger) -> int:
+    """Evaluate model on TEST_DATASET_PATH without Elasticsearch streaming."""
+    logger.info("Evaluation-only mode (no Elasticsearch).")
+    model = load_model(logger)
+    vectorizer = load_vectorizer(logger)
+    df, dataset_meta = load_test_dataset(logger)
+    logger.info(
+        "Dataset '%s' | rows=%d",
+        dataset_meta.source_path.name,
+        dataset_meta.rows_after_clean,
+    )
+    eval_data = collect_evaluation_data(
+        model, vectorizer, df, dataset_meta, logger
+    )
+    evaluate_model(eval_data, dataset_meta.source_path.name, logger)
+    return 0
+
+
+def parse_args() -> argparse.Namespace:
+    """CLI arguments."""
+    parser = argparse.ArgumentParser(
+        description="SQL-IDS real-time streaming and model evaluation.",
+    )
+    parser.add_argument(
+        "--eval-only",
+        action="store_true",
+        help="Skip Elasticsearch; run metrics on TEST_DATASET_PATH only.",
+    )
+    return parser.parse_args()
+
+
 def main() -> int:
     """Entry point for the real-time streaming pipeline."""
+    args = parse_args()
     logger = setup_logging()
     exit_code = 0
+
+    if args.eval_only:
+        try:
+            return run_eval_only(logger)
+        except FileNotFoundError as exc:
+            logger.exception("Missing file: %s", exc)
+            return 1
+        except Exception as exc:  # noqa: BLE001
+            logger.exception("Evaluation failed: %s", exc)
+            return 1
 
     try:
         logger.info("SQL-IDS real-time streaming pipeline starting.")
@@ -666,9 +836,10 @@ def main() -> int:
         )
 
         client = create_es_client_with_retry(logger)
+        stream_result: Optional[StreamResult] = None
         try:
             ensure_index(client, config.ES_INDEX, logger)
-            stats, eval_data = stream_predict_and_send(
+            stream_result = stream_predict_and_send(
                 client=client,
                 model=model,
                 vectorizer=vectorizer,
@@ -680,16 +851,18 @@ def main() -> int:
         finally:
             client.close()
 
-        print_summary(stats, logger)
-
-        if config.RUN_MODEL_EVALUATION:
-            evaluate_model(
-                eval_data,
+        if stream_result is not None:
+            print_summary(stream_result.stats, logger)
+            run_post_stream_evaluation(
+                stream_result,
                 dataset_name=dataset_meta.source_path.name,
                 logger=logger,
             )
+            if stream_result.interrupted:
+                exit_code = 130
 
-        logger.info("Pipeline finished successfully.")
+        if exit_code == 0:
+            logger.info("Pipeline finished successfully.")
     except FileNotFoundError as exc:
         logger.exception("Missing file: %s", exc)
         exit_code = 1
@@ -697,8 +870,8 @@ def main() -> int:
         logger.exception("%s", exc)
         exit_code = 1
     except KeyboardInterrupt:
-        logger.warning("Stream interrupted by user (Ctrl+C).")
-        print("\n[!] Stream stopped by user.")
+        logger.warning("Pipeline interrupted before/during setup.")
+        print("\n[!] Interrupted.")
         exit_code = 130
     except Exception as exc:  # noqa: BLE001
         logger.exception("Pipeline failed: %s", exc)

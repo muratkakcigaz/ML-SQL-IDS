@@ -136,6 +136,10 @@ def format_performance_report(
     binary: Optional[BinaryMetrics],
     multiclass: Optional[MulticlassMetrics],
     dataset_name: str,
+    *,
+    partial: bool = False,
+    processed_rows: int = 0,
+    total_rows: int = 0,
 ) -> str:
     """Build terminal-friendly performance report."""
     lines = [
@@ -145,6 +149,12 @@ def format_performance_report(
         "=" * 40,
         f"Dataset: {dataset_name}",
     ]
+
+    if partial:
+        lines.append(
+            f"Note: PARTIAL evaluation (stream stopped early) — "
+            f"{processed_rows:,}/{total_rows:,} rows processed"
+        )
 
     if binary is not None:
         lines.extend(
@@ -204,10 +214,17 @@ def metrics_to_json_dict(
     binary: Optional[BinaryMetrics],
     multiclass: Optional[MulticlassMetrics],
     dataset_name: str,
+    *,
+    partial: bool = False,
+    processed_rows: int = 0,
+    total_rows: int = 0,
 ) -> dict[str, Any]:
     """Serialize metrics for JSON export."""
     payload: dict[str, Any] = {
         "dataset": dataset_name,
+        "partial": partial,
+        "processed_rows": processed_rows,
+        "total_rows": total_rows,
         "binary": None,
         "multiclass": None,
     }
@@ -262,6 +279,10 @@ def evaluate_model(
     eval_data: EvaluationData,
     dataset_name: str,
     logger: logging.Logger,
+    *,
+    partial: bool = False,
+    processed_rows: int = 0,
+    total_rows: int = 0,
 ) -> dict[str, Any]:
     """
     Compute metrics, print report, and optionally export JSON.
@@ -305,12 +326,24 @@ def evaluate_model(
             )
 
     report = format_performance_report(
-        binary_metrics, multiclass_metrics, dataset_name
+        binary_metrics,
+        multiclass_metrics,
+        dataset_name,
+        partial=partial,
+        processed_rows=processed_rows,
+        total_rows=total_rows,
     )
     print(report)
     logger.info("Model performance report printed.")
 
-    payload = metrics_to_json_dict(binary_metrics, multiclass_metrics, dataset_name)
+    payload = metrics_to_json_dict(
+        binary_metrics,
+        multiclass_metrics,
+        dataset_name,
+        partial=partial,
+        processed_rows=processed_rows,
+        total_rows=total_rows,
+    )
 
     if config.EXPORT_METRICS_JSON and payload:
         try:
@@ -319,3 +352,21 @@ def evaluate_model(
             logger.error("Failed to write metrics JSON: %s", exc)
 
     return payload
+
+
+if __name__ == "__main__":
+    import sys
+    from pathlib import Path
+
+    _test_dir = Path(__file__).resolve().parent
+    if str(_test_dir) not in sys.path:
+        sys.path.insert(0, str(_test_dir))
+
+    print(
+        "model_evaluation.py — evaluation-only mode\n"
+        "(For full pipeline: python test/run.py)\n",
+        file=sys.stderr,
+    )
+    from run import run_eval_only, setup_logging
+
+    sys.exit(run_eval_only(setup_logging()))
